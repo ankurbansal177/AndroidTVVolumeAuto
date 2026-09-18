@@ -253,29 +253,30 @@ private fun RemoteScreen() {
                             }
                         }
                     }) { Text("Calibrate") }
-
-                    Button(
-                        enabled = baseline != null,
-                        onClick = {
-                            val next = !autoModeOn
-                            scope.launch {
-                                // The service's remote-control session connects asynchronously
-                                // after binding, so it may not be ready the instant this is
-                                // tapped - retry briefly instead of silently no-op'ing.
-                                var attempts = 0
-                                var succeeded = false
-                                while (!succeeded && attempts < 20) {
-                                    succeeded = autoService?.setAutoModeEnabled(next) == true
-                                    if (!succeeded) {
-                                        delay(150)
-                                        attempts++
-                                    }
-                                }
-                                if (succeeded) autoModeOn = next
-                            }
-                        },
-                    ) { Text(if (autoModeOn) "Auto Mode: On" else "Auto Mode: Off") }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    enabled = baseline != null,
+                    onClick = {
+                        val next = !autoModeOn
+                        scope.launch {
+                            // The service's remote-control session connects asynchronously
+                            // after binding, so it may not be ready the instant this is
+                            // tapped - retry briefly instead of silently no-op'ing.
+                            var attempts = 0
+                            var succeeded = false
+                            while (!succeeded && attempts < 20) {
+                                succeeded = autoService?.setAutoModeEnabled(next) == true
+                                if (!succeeded) {
+                                    delay(150)
+                                    attempts++
+                                }
+                            }
+                            if (succeeded) autoModeOn = next
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text(if (autoModeOn) "Auto Mode: On" else "Auto Mode: Off") }
                 if (micPermissionDenied) {
                     Text(text = "Microphone permission is required for Auto Mode.")
                 }
